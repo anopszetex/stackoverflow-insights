@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "aaron-bond.better-comments",
+    "adpyke.codesnap",
+    "dbaeumer.vscode-eslint",
+    "wix.vscode-import-cost",
+    "rickynormandeau.mariana-pro",
+    "esbenp.prettier-vscode"
+  ]
+}

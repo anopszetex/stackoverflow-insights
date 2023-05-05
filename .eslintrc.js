@@ -1,15 +1,25 @@
 module.exports = {
-  'env': {
-    'es2021': true,
-    'node': true,
+  env: {
+    es2021: true,
+    node: true,
   },
-  'extends': 'google',
-  'overrides': [
+  extends: [
+    'eslint:recommended',
+    'google',
+    'plugin:import/recommended',
+    'plugin:node/recommended',
+    'prettier',
   ],
-  'parserOptions': {
-    'ecmaVersion': 'latest',
-    'sourceType': 'module',
+  overrides: [],
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
   },
-  'rules': {
+  rules: {
+    'new-cap': 'off',
+    'no-invalid-this': 'off',
+    'require-jsdoc': 'off',
+    'valid-jsdoc': 'off',
+    'no-console': 2,
   },
 };
