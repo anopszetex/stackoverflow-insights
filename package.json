@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "type": "module",
+  "scripts": {
+    "test:dev": "node --test --watch tests/unit/sum.spec.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/anopszetex/stackoverflow-insights.git"
