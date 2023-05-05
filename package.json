@@ -19,6 +19,11 @@
   "homepage": "https://github.com/anopszetex/stackoverflow-insights#readme",
   "devDependencies": {
     "eslint": "^8.39.0",
-    "eslint-config-google": "^0.14.0"
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-node": "^11.1.0",
+    "prettier": "^2.8.8",
+    "prettier-plugin-sort-imports": "^1.7.2"
   }
 }
