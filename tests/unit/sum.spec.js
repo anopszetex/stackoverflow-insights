@@ -5,7 +5,6 @@ import { describe, it } from 'node:test';
 
 describe('sum', () => {
   it('sums up two numbers', () => {
-    const result = sum(1, 2);
-    strictEqual(result, 3);
+    strictEqual(sum(1, 2), 3);
   });
 });
