@@ -11,7 +11,7 @@ const FOLDER = './docs/state-of-js';
  * @param {import('node:fs').ReadStream[]} streams - array of streams to be concatenated
  * @returns {import('node:stream').PassThrough}
  */
-function concatStream(streams) {
+function mergeStream(streams) {
   return streams.reduce((acc, current, _, items) => {
     current.pipe(acc, { end: false });
 
@@ -53,7 +53,7 @@ async function prepareStream(folder) {
     return fs.createReadStream(path.join(folder, file));
   });
 
-  const stream = concatStream(streams);
+  const stream = mergeStream(streams);
 
   return { stream, fileSize };
 }
