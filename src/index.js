@@ -1,6 +1,5 @@
 import { readdir, stat } from 'node:fs/promises';
 import { PassThrough } from 'node:stream';
-import { log } from 'node:console';
 import path from 'node:path';
 import fs from 'node:fs';
 
