@@ -29,6 +29,7 @@
     "prettier-plugin-sort-imports": "^1.7.2"
   },
   "dependencies": {
+    "dotenv": "^16.0.3",
     "pino": "^8.12.1",
     "split2": "^4.2.0"
   }
