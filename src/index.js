@@ -1,3 +1,5 @@
+import { rootLogger } from './infra/logger.js';
+
 import { readdir, stat } from 'node:fs/promises';
 import { PassThrough } from 'node:stream';
 import path from 'node:path';
@@ -58,3 +60,9 @@ async function prepareStream(folder) {
 }
 
 await prepareStream(FOLDER);
+
+rootLogger.info('done');
+rootLogger.debug('done');
+rootLogger.warn('done');
+rootLogger.error('done');
+rootLogger.fatal('done');
