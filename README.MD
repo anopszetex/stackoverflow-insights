@@ -9,6 +9,6 @@ npm i
 ## To start the API server
 
 ```bash
-# start the server
+# start the app
 npm start
 ```
