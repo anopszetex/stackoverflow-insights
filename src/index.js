@@ -9,6 +9,7 @@ import fs from 'node:fs';
 
 import { calculatePercentage } from './helpers/index.js';
 import { rootLogger as logger } from './infra/logger.js';
+import { setTimeout } from 'node:timers/promises';
 
 const FOLDER = './docs/state-of-js';
 
@@ -93,6 +94,7 @@ function handleProgressBar(fileSize, progressnotifier) {
     for await (const chunk of source) {
       processedAlready += chunk.length;
       progressnotifier.emit('update', processedAlready, fileSize);
+      await setTimeout(2);
     }
   };
 }
@@ -108,7 +110,7 @@ const progressNotifier = new EventEmitter();
 function handleUpdateProgressBar() {
   const stat = { lastUpdatedValue: 0 };
 
-  return function updateProgressBar(processedAlready, fileSize) {
+  return async function updateProgressBar(processedAlready, fileSize) {
     const percentage = calculatePercentage(processedAlready, fileSize);
 
     if (percentage === stat.lastUpdatedValue) {
