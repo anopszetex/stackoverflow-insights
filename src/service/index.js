@@ -8,6 +8,8 @@ import fs from 'node:fs';
 
 import { TIMEOUT_SIGNAL } from './../helpers/index.js';
 
+import config from './../helpers/config.js';
+
 /**
  *
  * @param {string[]}  files   - array of files to be read
@@ -64,8 +66,16 @@ function handleProgressBar(fileSize, progressnotifier) {
 }
 
 async function* mapFunction(stream) {
-  for await (const chunk of stream) {
-    yield chunk;
+  for await (const data of stream) {
+    const tools = data.tools;
+
+    const item = config.tecnologiesInAnalysis.reduce((acc, technology, key) => {
+      acc[technology] = config.likes.includes(tools[technology].experience);
+
+      return acc;
+    }, {});
+
+    yield { ...item, year: data.year };
   }
 }
 
