@@ -110,7 +110,7 @@ const progressNotifier = new EventEmitter();
 function handleUpdateProgressBar() {
   const stat = { lastUpdatedValue: 0 };
 
-  return async function updateProgressBar(processedAlready, fileSize) {
+  return function updateProgressBar(processedAlready, fileSize) {
     const percentage = calculatePercentage(processedAlready, fileSize);
 
     if (percentage === stat.lastUpdatedValue) {
