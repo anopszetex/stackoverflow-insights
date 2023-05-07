@@ -1,36 +1,12 @@
+import StreamConcat from 'stream-concat';
 import split2 from 'split2';
 
 import { readdir, stat } from 'node:fs/promises';
 import { pipeline } from 'node:stream/promises';
-import { PassThrough } from 'node:stream';
 import path from 'node:path';
 import fs from 'node:fs';
 
-import { setTimeout } from 'node:timers/promises';
-
 import { TIMEOUT_SIGNAL } from './../helpers/index.js';
-
-/**
- *
- * @param {import('node:fs').ReadStream[]} streams - array of streams to be concatenated
- * @returns {import('node:stream').PassThrough}
- */
-function mergeStreams(streams) {
-  return streams.reduce((prev, current, _, items) => {
-    current.pipe(prev, { end: false });
-
-    current.on('end', () => {
-      const allStreamsEnded = items.every(stream => stream.ended);
-
-      if (allStreamsEnded) {
-        prev.end();
-        return;
-      }
-    });
-
-    return prev;
-  }, new PassThrough());
-}
 
 /**
  *
@@ -64,7 +40,7 @@ async function prepareStream(folder) {
     return fs.createReadStream(path.join(folder, file));
   });
 
-  const stream = mergeStreams(streams);
+  const stream = new StreamConcat(streams);
 
   return { stream, fileSize };
 }
@@ -81,9 +57,16 @@ function handleProgressBar(fileSize, progressnotifier) {
     for await (const chunk of source) {
       processedAlready += chunk.length;
       progressnotifier.emit('update', processedAlready, fileSize);
-      await setTimeout(2);
+
+      yield chunk;
     }
   };
+}
+
+async function* mapFunction(stream) {
+  for await (const chunk of stream) {
+    yield chunk;
+  }
 }
 
 /**
@@ -101,6 +84,7 @@ async function runProcess(params) {
     stream,
     handleProgressBar(fileSize, progressNotifier),
     split2(JSON.parse),
+    mapFunction,
     {
       signal: AbortSignal.timeout(TIMEOUT_SIGNAL),
     }
