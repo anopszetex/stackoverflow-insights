@@ -23,7 +23,12 @@ function mergeStreams(streams) {
     current.pipe(prev, { end: false });
 
     current.on('end', () => {
-      return items.every(stream => stream.ended) && prev.end();
+      const allStreamsEnded = items.every(stream => stream.ended);
+
+      if (allStreamsEnded) {
+        prev.end();
+        return;
+      }
     });
 
     return prev;
@@ -94,8 +99,9 @@ function handleProgressBar(fileSize, progressnotifier) {
     let processedAlready = 0;
 
     for await (const chunk of source) {
-      processedAlready += chunk.length;
-      progressnotifier.emit('update', processedAlready, fileSize);
+      // console.log('uahuahauh', chunk.toString());
+      // processedAlready += chunk.length;
+      // progressnotifier.emit('update', processedAlready, fileSize);
       yield chunk;
     }
   };
@@ -119,12 +125,12 @@ async function runPipeline(progressNotifier) {
 const progressNotifier = new EventEmitter();
 
 async function init() {
-  progressNotifier.on('update', (processedAlready, fileSize) => {
+  /*  progressNotifier.on('update', (processedAlready, fileSize) => {
     const percentage = Math.floor((processedAlready / fileSize) * 100);
 
     logger.debug({ processedAlready, fileSize }, `Progress: %${percentage}%`);
   });
-
+ */
   await runPipeline(progressNotifier);
 }
 
