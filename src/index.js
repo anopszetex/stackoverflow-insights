@@ -10,10 +10,11 @@ const DEFAULT_PATH = './docs';
 const INPUT_FOLDER = `${DEFAULT_PATH}/state-of-js`;
 const OUTPUT_FOLDER = `${DEFAULT_PATH}/final.json`;
 
-function handleUpdateProgressBar() {
+// todo move this function to view layer
+function handleProgressBarUpdate() {
   const stat = { lastUpdatedValue: 0 };
 
-  return function updateProgressBar(processedAlready, fileSize) {
+  return function onProgressUpdated(processedAlready, fileSize) {
     const percentage = calculatePercentage(processedAlready, fileSize);
 
     if (percentage === stat.lastUpdatedValue) {
@@ -27,7 +28,7 @@ function handleUpdateProgressBar() {
 }
 
 async function init() {
-  progressNotifier.on('update', handleUpdateProgressBar());
+  progressNotifier.on('update', handleProgressBarUpdate());
 
   await runPipeline({
     progressNotifier,
