@@ -70,7 +70,7 @@ async function prepareStream(folder) {
 
   const stream = mergeStreams(streams);
 
-  return { stream: stream, fileSize };
+  return { stream, fileSize };
 }
 
 async function runProcess(params) {
