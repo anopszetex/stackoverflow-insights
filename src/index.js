@@ -7,6 +7,7 @@ import { PassThrough } from 'node:stream';
 import path from 'node:path';
 import fs from 'node:fs';
 
+import { calculatePercentage } from './helpers/index.js';
 import { rootLogger as logger } from './infra/logger.js';
 
 const FOLDER = './docs/state-of-js';
@@ -69,68 +70,60 @@ async function prepareStream(folder) {
 
   const stream = mergeStreams(streams);
 
-  return { stream, fileSize };
+  return { stream: stream, fileSize };
 }
 
 async function runProcess(params) {
   const { stream, fileSize, progressNotifier } = params;
 
-  return await pipeline(
+  return pipeline(
     stream,
     handleProgressBar(fileSize, progressNotifier),
     split2(JSON.parse),
-    // progressBar,
-    // mapFunction,
     {
       signal: AbortSignal.timeout(TEN_SECONDS),
     }
   );
 }
 
-/* async function* mapFunction(source) {
-  for await (const chunk of source) {
-    console.log('source', chunk);
-    yield chunk;
-  }
-}
- */
 function handleProgressBar(fileSize, progressnotifier) {
   return async function* progressBar(source) {
     let processedAlready = 0;
 
     for await (const chunk of source) {
-      // console.log('uahuahauh', chunk.toString());
-      // processedAlready += chunk.length;
-      // progressnotifier.emit('update', processedAlready, fileSize);
-      yield chunk;
+      processedAlready += chunk.length;
+      progressnotifier.emit('update', processedAlready, fileSize);
     }
   };
 }
 
-/* async function* progressBar(stream) {
-  for await (const data of stream) {
-    console.log('okspaokspoaps');
-    yield data;
-  }
-} */
-
 async function runPipeline(progressNotifier) {
   const { stream, fileSize } = await prepareStream(FOLDER);
 
-  logger.debug({ fileSize }, 'Starting pipeline');
-
-  return await runProcess({ stream, fileSize, progressNotifier });
+  return runProcess({ stream, fileSize, progressNotifier });
 }
 
 const progressNotifier = new EventEmitter();
 
-async function init() {
-  /*  progressNotifier.on('update', (processedAlready, fileSize) => {
-    const percentage = Math.floor((processedAlready / fileSize) * 100);
+function handleUpdateProgressBar() {
+  const stat = { lastUpdatedValue: 0 };
+
+  return function updateProgressBar(processedAlready, fileSize) {
+    const percentage = calculatePercentage(processedAlready, fileSize);
+
+    if (percentage === stat.lastUpdatedValue) {
+      return;
+    }
+
+    stat.lastUpdatedValue = percentage;
 
     logger.debug({ processedAlready, fileSize }, `Progress: %${percentage}%`);
-  });
- */
+  };
+}
+
+async function init() {
+  progressNotifier.on('update', handleUpdateProgressBar());
+
   await runPipeline(progressNotifier);
 }
 
