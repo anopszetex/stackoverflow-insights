@@ -37,15 +37,17 @@ function mergeStreams(streams) {
  * @returns {Promise<number>} - total size of files
  */
 async function getFileSize(files, folder) {
-  const stats = files.map(file => {
+  const fileStats = files.map(file => {
     return stat(path.join(folder, file));
   });
 
-  const results = await Promise.all(stats);
+  const statsArray = await Promise.all(fileStats);
 
-  return results.reduce((acc, current) => {
-    return acc + current.size;
+  const totalSize = statsArray.reduce((acc, currentStat) => {
+    return acc + currentStat.size;
   }, 0);
+
+  return totalSize;
 }
 
 /**
