@@ -32,6 +32,7 @@
   "dependencies": {
     "dotenv": "^16.0.3",
     "pino": "^8.12.1",
-    "split2": "^4.2.0"
+    "split2": "^4.2.0",
+    "stream-concat": "^1.0.0"
   }
 }
