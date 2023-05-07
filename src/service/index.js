@@ -14,7 +14,7 @@ import { TIMEOUT_SIGNAL } from './../helpers/index.js';
  * @param {string}    folder  - folder to be read
  * @returns {Promise<number>} - total size of files
  */
-async function getFileSize(files, folder) {
+async function getFilesSize(files, folder) {
   const fileStats = files.map(file => {
     return stat(path.join(folder, file));
   });
@@ -32,9 +32,9 @@ async function getFileSize(files, folder) {
  *
  * @param {string} folder - folder to be read
  */
-async function prepareStream(folder) {
+async function prepareStreams(folder) {
   const files = await readdir(folder);
-  const fileSize = await getFileSize(files, folder);
+  const fileSize = await getFilesSize(files, folder);
 
   const streams = files.map(file => {
     return fs.createReadStream(path.join(folder, file));
@@ -101,9 +101,9 @@ async function runProcess(params) {
  * @returns {Promise<void>}
  */
 async function runPipeline(params) {
-  const { progressNotifier, inputFolder, outputFolder, logger } = params;
+  const { progressNotifier, inputFolder, outputFolder } = params;
 
-  const { stream, fileSize } = await prepareStream(inputFolder);
+  const { stream, fileSize } = await prepareStreams(inputFolder);
 
   return runProcess({ stream, fileSize, progressNotifier });
 }
