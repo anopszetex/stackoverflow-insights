@@ -12,7 +12,7 @@ const lineChartData = {
     x: YEARS,
     y: defaultY(),
     style: {
-      // vermelho angular
+      // red angular
       line: [170, 42, 44],
     },
   },
@@ -20,28 +20,28 @@ const lineChartData = {
     title: 'react',
     x: YEARS,
     y: defaultY(),
-    // azul react
+    // cyan react
     style: { line: [97, 218, 251] },
   },
   vuejs: {
     title: 'vuejs',
     x: YEARS,
     y: defaultY(),
-    // verde vue
+    // green vuejs
     style: { line: [63, 178, 127] },
   },
   ember: {
     title: 'ember',
     x: YEARS,
     y: defaultY(),
-    // laranja vue
+    // orange ember
     style: { line: [218, 89, 46] },
   },
   backbone: {
     title: 'backbone',
     x: YEARS,
     y: defaultY(),
-    // verde backbone
+    // dark green backbone
     style: { line: [37, 108, 74] },
   },
 };
