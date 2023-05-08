@@ -69,7 +69,7 @@ async function* mapFunction(stream) {
   for await (const data of stream) {
     const tools = data.tools;
 
-    const item = config.tecnologiesInAnalysis.reduce((acc, technology, key) => {
+    const item = config.tecnologiesInAnalysis.reduce((acc, technology) => {
       acc[technology] = config.likes.includes(tools[technology].experience);
 
       return acc;
