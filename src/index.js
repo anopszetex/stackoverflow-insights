@@ -5,6 +5,7 @@ import { rootLogger as logger } from './infra/logger.js';
 import { runPipeline } from './service/index.js';
 
 const progressNotifier = new EventEmitter();
+const graphNotifier = new EventEmitter();
 
 const DEFAULT_PATH = './docs';
 const INPUT_FOLDER = `${DEFAULT_PATH}/state-of-js`;
@@ -31,6 +32,7 @@ async function init() {
   progressNotifier.on('update', handleProgressBarUpdate());
 
   await runPipeline({
+    graphNotifier,
     progressNotifier,
     inputFolder: INPUT_FOLDER,
     outputFolder: OUTPUT_FOLDER,
