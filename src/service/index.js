@@ -83,10 +83,23 @@ async function* mapFunction(stream) {
 }
 
 function aggregate(graphNotifier) {
-  return async function* aggregate1(stream) {
+  function aggregateItemsPerYear(years) {
+    const initialValues = {};
+
+    for (const tecnology of config.tecnologiesInAnalysis) {
+      initialValues[tecnology] = 0;
+    }
+
+    return initialValues;
+  }
+
+  return async function* feedGraph(stream) {
     for await (const data of stream) {
-      // console.log(data);
-      // yield data;
+      const yearsInContext = aggregateItemsPerYear(config.years);
+
+      console.log(data.year.toString());
+
+      yield data;
     }
   };
 }
