@@ -68,14 +68,14 @@ function handleProgressBar(fileSize, progressnotifier) {
 async function* mapFunction(stream) {
   for await (const { tools, year } of stream) {
     const item = config.tecnologiesInAnalysis.reduce(
-      (acc, technology) => {
+      (technologyAcc, technology) => {
         const { experience } = tools?.[technology] || {};
 
-        const isLiked = config.likes.includes(experience);
+        const isExperienceLiked = config.likes.includes(experience);
 
-        return { ...acc, [technology]: isLiked };
+        return { year, ...technologyAcc, [technology]: isExperienceLiked };
       },
-      { year }
+      {}
     );
 
     yield item;
@@ -83,21 +83,45 @@ async function* mapFunction(stream) {
 }
 
 function aggregate(graphNotifier) {
+  //!!
   function aggregateItemsPerYear(years) {
-    const initialValues = {};
+    const initialValuesForTechnologies = config.tecnologiesInAnalysis.reduce(
+      (acc, technology) => {
+        acc[technology] = 0;
 
-    for (const tecnology of config.tecnologiesInAnalysis) {
-      initialValues[tecnology] = 0;
+        return acc;
+      },
+      {}
+    );
+
+    const guard = {};
+
+    for (const year of years) {
+      guard[year] = {
+        ...initialValuesForTechnologies,
+        get total() {
+          const list = Reflect.ownKeys(guard[year])
+            .filter(key => key !== 'total')
+            .reduce((acc, current) => {
+              const value = guard[year][current];
+
+              return acc + value;
+            }, 0);
+        },
+      };
     }
 
-    return initialValues;
+    // console.log(guard[2019].total);
+    // console.log(initialValues);
   }
+  //!
 
   return async function* feedGraph(stream) {
     for await (const data of stream) {
-      const yearsInContext = aggregateItemsPerYear(config.years);
+      // console.log(data);
+      aggregateItemsPerYear(config.years);
 
-      console.log(data.year.toString());
+      // console.log(data.year.toString());
 
       yield data;
     }
