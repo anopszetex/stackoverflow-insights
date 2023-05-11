@@ -83,14 +83,13 @@ async function* mapFunction(stream) {
 }
 
 function calculateTotalForYear(yearData) {
-  return Reflect.ownKeys(yearData).reduce((acc, current) => {
+  return Object.keys(yearData).reduce((acc, current) => {
     if (current === 'total') return acc;
 
     return acc + yearData[current];
   }, 0);
 }
 
-//!!
 function aggregateItemsPerYear(years) {
   const initialValuesForTechnologies = config.tecnologiesInAnalysis.reduce(
     (acc, technology) => {
@@ -100,20 +99,17 @@ function aggregateItemsPerYear(years) {
     {}
   );
 
-  const mapItemsPerYear = {};
-
-  for (const year of years) {
-    mapItemsPerYear[year] = {
+  return years.reduce((acc, year) => {
+    acc[year] = {
       ...initialValuesForTechnologies,
       get total() {
-        return calculateTotalForYear(mapItemsPerYear[year]);
+        return calculateTotalForYear(acc[year]);
       },
     };
-  }
 
-  return mapItemsPerYear;
+    return acc;
+  }, {});
 }
-//!
 
 function aggregate(graphNotifier) {
   return async function* feedGraph(stream) {
@@ -123,12 +119,12 @@ function aggregate(graphNotifier) {
       const year = data.year;
       Reflect.deleteProperty(data, 'year');
 
-      Reflect.ownKeys(data).forEach(key => {
-        return (yearsInContext[year][key] += data[key]);
-      });
-
-      yield JSON.stringify(yearsInContext);
+      for (const key of Object.keys(data)) {
+        yearsInContext[year][key] += data[key];
+      }
     }
+
+    yield JSON.stringify(yearsInContext);
   };
 }
 
