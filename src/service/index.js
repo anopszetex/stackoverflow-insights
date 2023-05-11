@@ -3,8 +3,8 @@ import split2 from 'split2';
 
 import { readdir, stat } from 'node:fs/promises';
 import { pipeline } from 'node:stream/promises';
+import fs, { createWriteStream } from 'node:fs';
 import path from 'node:path';
-import fs from 'node:fs';
 
 import { TIMEOUT_SIGNAL } from './../helpers/index.js';
 
@@ -82,48 +82,52 @@ async function* mapFunction(stream) {
   }
 }
 
-function aggregate(graphNotifier) {
-  //!!
-  function aggregateItemsPerYear(years) {
-    const initialValuesForTechnologies = config.tecnologiesInAnalysis.reduce(
-      (acc, technology) => {
-        acc[technology] = 0;
+function calculateTotalForYear(yearData) {
+  return Reflect.ownKeys(yearData).reduce((acc, current) => {
+    if (current === 'total') return acc;
 
-        return acc;
+    return acc + yearData[current];
+  }, 0);
+}
+
+//!!
+function aggregateItemsPerYear(years) {
+  const initialValuesForTechnologies = config.tecnologiesInAnalysis.reduce(
+    (acc, technology) => {
+      acc[technology] = 0;
+      return acc;
+    },
+    {}
+  );
+
+  const mapItemsPerYear = {};
+
+  for (const year of years) {
+    mapItemsPerYear[year] = {
+      ...initialValuesForTechnologies,
+      get total() {
+        return calculateTotalForYear(mapItemsPerYear[year]);
       },
-      {}
-    );
-
-    const guard = {};
-
-    for (const year of years) {
-      guard[year] = {
-        ...initialValuesForTechnologies,
-        get total() {
-          const list = Reflect.ownKeys(guard[year])
-            .filter(key => key !== 'total')
-            .reduce((acc, current) => {
-              const value = guard[year][current];
-
-              return acc + value;
-            }, 0);
-        },
-      };
-    }
-
-    // console.log(guard[2019].total);
-    // console.log(initialValues);
+    };
   }
-  //!
 
+  return mapItemsPerYear;
+}
+//!
+
+function aggregate(graphNotifier) {
   return async function* feedGraph(stream) {
+    const yearsInContext = aggregateItemsPerYear(config.years);
+
     for await (const data of stream) {
-      // console.log(data);
-      aggregateItemsPerYear(config.years);
+      const year = data.year;
+      Reflect.deleteProperty(data, 'year');
 
-      // console.log(data.year.toString());
+      Reflect.ownKeys(data).forEach(key => {
+        return (yearsInContext[year][key] += data[key]);
+      });
 
-      yield data;
+      yield JSON.stringify(yearsInContext);
     }
   };
 }
@@ -138,7 +142,8 @@ function aggregate(graphNotifier) {
  * @returns {Promise<void>}
  */
 async function runProcess(params) {
-  const { stream, fileSize, progressNotifier, graphNotifier } = params;
+  const { stream, fileSize, progressNotifier, graphNotifier, outputFolder } =
+    params;
 
   return pipeline(
     stream,
@@ -146,6 +151,7 @@ async function runProcess(params) {
     split2(JSON.parse),
     mapFunction,
     aggregate(graphNotifier),
+    createWriteStream(outputFolder),
     {
       signal: AbortSignal.timeout(TIMEOUT_SIGNAL),
     }
@@ -167,7 +173,13 @@ async function runPipeline(params) {
 
   const { stream, fileSize } = await prepareStreams(inputFolder);
 
-  return runProcess({ stream, fileSize, progressNotifier, graphNotifier });
+  return runProcess({
+    stream,
+    fileSize,
+    progressNotifier,
+    graphNotifier,
+    outputFolder,
+  });
 }
 
 export { runPipeline };
