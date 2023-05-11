@@ -71,7 +71,8 @@ async function* mapFunction(stream) {
       (technologyAcc, technology) => {
         const { experience } = tools?.[technology] || {};
 
-        const isExperienceLiked = config.likes.includes(experience);
+        //* + is used to convert a boolean value to a number
+        const isExperienceLiked = +config.likes.includes(experience);
 
         return { year, ...technologyAcc, [technology]: isExperienceLiked };
       },
