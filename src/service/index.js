@@ -102,6 +102,9 @@ function calculateTotalForYear(yearData) {
   }, 0);
 }
 
+/**
+ * @param {string[]} years - '2016', '2017', '2018', '2019'
+ */
 function aggregateItemsPerYear(years) {
   const initialValuesForTechnologies = config.tecnologiesInAnalysis.reduce(
     (acc, technology) => {
