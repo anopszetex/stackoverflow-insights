@@ -153,8 +153,14 @@ function aggregate(graphNotifier) {
  * @returns {Promise<void>}
  */
 async function runProcess(params) {
-  const { stream, fileSize, progressNotifier, graphNotifier, outputFolder } =
-    params;
+  const {
+    stream,
+    fileSize,
+    progressNotifier,
+    graphNotifier,
+    outputFolder,
+    controller,
+  } = params;
 
   return pipeline(
     stream,
@@ -164,7 +170,7 @@ async function runProcess(params) {
     aggregate(graphNotifier),
     createWriteStream(outputFolder),
     {
-      signal: AbortSignal.timeout(TIMEOUT_SIGNAL),
+      signal: controller.signal,
     }
   );
 }
@@ -180,11 +186,18 @@ async function runProcess(params) {
  * @returns {Promise<void>}
  */
 async function runPipeline(params) {
-  const { progressNotifier, inputFolder, outputFolder, graphNotifier } = params;
+  const {
+    progressNotifier,
+    inputFolder,
+    outputFolder,
+    graphNotifier,
+    controller,
+  } = params;
 
   const { stream, fileSize } = await prepareStreams(inputFolder);
 
   return runProcess({
+    controller,
     stream,
     fileSize,
     progressNotifier,
