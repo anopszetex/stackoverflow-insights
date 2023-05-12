@@ -11,7 +11,7 @@ export function terminate(
     logger.debug({ code, reason });
 
     if (err && err instanceof Error) {
-      logger.error(err.message, err.stack);
+      logger.error({ message: err.message, stack: err.stack });
     }
 
     controller.abort();
