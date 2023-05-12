@@ -83,6 +83,17 @@ async function* mapFunction(stream) {
   }
 }
 
+/**
+ *
+ * @param {{
+ * angular: number,
+ * react: number,
+ * vuejs: number,
+ * ember: number,
+ * backbone: number,
+ * get total(): number
+ * }} yearData
+ */
 function calculateTotalForYear(yearData) {
   return Object.keys(yearData).reduce((acc, current) => {
     if (current === 'total') return acc;
