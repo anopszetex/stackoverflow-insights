@@ -1,3 +1,5 @@
+export * from './terminate.js';
+
 /**
  * @param {number} numerator
  * @param {number} denominator
@@ -8,3 +10,8 @@ export function calculatePercentage(numerator, denominator) {
 }
 
 export const TIMEOUT_SIGNAL = 15e3;
+
+export const CODE = {
+  SUCCESS: 0,
+  ERROR: 1,
+};

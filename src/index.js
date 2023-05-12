@@ -2,7 +2,7 @@ import { EventEmitter } from 'node:events';
 
 import { calculatePercentage } from './helpers/index.js';
 import { rootLogger as logger } from './infra/logger.js';
-import { terminate } from './helpers/terminate.js';
+import { terminate, CODE } from './helpers/index.js';
 import { runPipeline } from './service/index.js';
 
 const progressNotifier = new EventEmitter();
@@ -50,7 +50,7 @@ async function init() {
 
 init();
 
-process.on('uncaughtException', exitHandler(1, 'Unexpected Error'));
-process.on('unhandledRejection', exitHandler(1, 'Unhandled Promise'));
-process.on('SIGTERM', exitHandler(0, 'SIGTERM'));
-process.on('SIGINT', exitHandler(0, 'SIGINT'));
+process.on('uncaughtException', exitHandler(CODE.ERROR, 'Unexpected Error'));
+process.on('unhandledRejection', exitHandler(CODE.ERROR, 'Unhandled Promise'));
+process.on('SIGTERM', exitHandler(CODE.SUCCESS, 'SIGTERM'));
+process.on('SIGINT', exitHandler(CODE.SUCCESS, 'SIGINT'));
