@@ -6,8 +6,6 @@ import { pipeline } from 'node:stream/promises';
 import fs, { createWriteStream } from 'node:fs';
 import path from 'node:path';
 
-import { TIMEOUT_SIGNAL } from './../helpers/index.js';
-
 import config from './../helpers/config.js';
 
 /**
