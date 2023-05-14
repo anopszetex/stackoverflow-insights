@@ -3,8 +3,8 @@ import split2 from 'split2';
 
 import { readdir, stat } from 'node:fs/promises';
 import { pipeline } from 'node:stream/promises';
-import fs, { createWriteStream } from 'node:fs';
 import path from 'node:path';
+import fs from 'node:fs';
 
 import config from './../helpers/config.js';
 
@@ -166,7 +166,7 @@ async function runProcess(params) {
     split2(JSON.parse),
     mapFunction,
     aggregate(graphNotifier),
-    createWriteStream(outputFolder),
+    fs.createWriteStream(outputFolder),
     {
       signal: controller.signal,
     }
