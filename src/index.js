@@ -36,7 +36,7 @@ const exitHandler = terminate(controller, logger, {
   timeout: 500,
 });
 
-async function init() {
+export async function init() {
   progressNotifier.on('update', handleProgressBarUpdate());
 
   await runPipeline({
@@ -48,7 +48,7 @@ async function init() {
   });
 }
 
-init();
+// init();
 
 process.on('uncaughtException', exitHandler(CODE.ERROR, 'Unexpected Error'));
 process.on('unhandledRejection', exitHandler(CODE.ERROR, 'Unhandled Promise'));
