@@ -20,7 +20,7 @@ export function initialize() {
 
   return {
     buildInterface() {
-      screen.key(['escape', 'q', 'C-c'], () => process.emit('exit'));
+      screen.key(['escape', 'q', 'C-c'], () => process.emit('SIGINT'));
       screen.render();
       return this;
     },
