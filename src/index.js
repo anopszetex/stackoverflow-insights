@@ -1,33 +1,13 @@
 import { EventEmitter } from 'node:events';
 
-import { calculatePercentage } from './helpers/index.js';
 import { rootLogger as logger } from './infra/logger.js';
 import { terminate, CODE } from './helpers/index.js';
 import { runPipeline } from './service/index.js';
-
-const progressNotifier = new EventEmitter();
-const graphNotifier = new EventEmitter();
+import { initialize } from './service/view.js';
 
 const DEFAULT_PATH = './docs';
 const INPUT_FOLDER = `${DEFAULT_PATH}/state-of-js`;
 const OUTPUT_FOLDER = `${DEFAULT_PATH}/final.json`;
-
-// todo move this function to view layer
-function handleProgressBarUpdate() {
-  const stat = { lastUpdatedValue: 0 };
-
-  return function onProgressUpdated(processedAlready, fileSize) {
-    const percentage = calculatePercentage(processedAlready, fileSize);
-
-    if (percentage === stat.lastUpdatedValue) {
-      return;
-    }
-
-    stat.lastUpdatedValue = percentage;
-
-    logger.debug({ processedAlready, fileSize }, `Progress: %${percentage}%`);
-  };
-}
 
 const controller = new AbortController();
 
@@ -37,7 +17,12 @@ const exitHandler = terminate(controller, logger, {
 });
 
 export async function init() {
-  progressNotifier.on('update', handleProgressBarUpdate());
+  const progressNotifier = new EventEmitter();
+  const graphNotifier = new EventEmitter();
+
+  const view = initialize().buildInterface().buildProgressBar();
+
+  progressNotifier.on('update', view.handleProgressBarUpdate());
 
   await runPipeline({
     controller,
@@ -48,7 +33,7 @@ export async function init() {
   });
 }
 
-// init();
+init();
 
 process.on('uncaughtException', exitHandler(CODE.ERROR, 'Unexpected Error'));
 process.on('unhandledRejection', exitHandler(CODE.ERROR, 'Unhandled Promise'));
