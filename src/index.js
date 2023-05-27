@@ -5,6 +5,8 @@ import { terminate, CODE } from './helpers/index.js';
 import { runPipeline } from './service/index.js';
 import { initialize } from './service/view.js';
 
+import config from './helpers/config.js';
+
 const DEFAULT_PATH = './docs';
 const INPUT_FOLDER = `${DEFAULT_PATH}/state-of-js`;
 const OUTPUT_FOLDER = `${DEFAULT_PATH}/final.json`;
@@ -20,9 +22,15 @@ export async function init() {
   const progressNotifier = new EventEmitter();
   const graphNotifier = new EventEmitter();
 
-  const view = initialize().buildInterface().buildProgressBar();
+  const view = initialize({
+    years: config.years,
+    lineChartData: config.lineChartData,
+  })
+    .buildInterface()
+    .buildProgressBar();
 
   progressNotifier.on('update', view.handleProgressBarUpdate());
+  graphNotifier.on('update', view.handleLineChartUpdate.bind(view)); //* bind is necessary because of the context
 
   await runPipeline({
     controller,
