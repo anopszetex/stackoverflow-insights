@@ -41,8 +41,8 @@ const lineChartData = {
     title: 'backbone',
     x: YEARS,
     y: defaultY(),
-    // dark green backbone
-    style: { line: [37, 108, 74] },
+    // blue darken
+    style: { line: [37, 108, 290] },
   },
 };
 
