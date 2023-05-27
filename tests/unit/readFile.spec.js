@@ -6,7 +6,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import * as url from 'url';
 
-import { init } from './../../src/index.js';
+import { init } from '../../src/index.js';
 
 describe('Read file', () => {
   let app = null;

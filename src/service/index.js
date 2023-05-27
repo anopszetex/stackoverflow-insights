@@ -137,6 +137,8 @@ function aggregate(graphNotifier) {
       }
     }
 
+    graphNotifier.emit('update', yearsInContext);
+
     yield JSON.stringify(yearsInContext);
   };
 }
