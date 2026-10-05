@@ -1,42 +1,5 @@
 # stackoverflow-insights
 
-A stream-based terminal application that analyzes large State of JavaScript survey datasets without loading every record into memory.
-
-## What it demonstrates
-
-- Concatenating multiple NDJSON data sources as streams.
-- Parsing and transforming records incrementally.
-- Aggregating technology preferences by survey year.
-- Reporting byte-level progress through events.
-- Rendering progress and results in a terminal UI with Blessed.
-- Cancelling the pipeline through an `AbortController`.
-
-## Run
-
-```sh
-npm ci
-npm start
-```
-
-The sample datasets are stored under `docs/state-of-js`, and the aggregated result is written to `docs/final.json`.
-
-## Architecture
-
-```text
-src/
-├── helpers/   # configuration, lifecycle, and termination
-├── infra/     # logging
-└── service/   # stream pipeline and terminal views
-```
-
-## Current limitations
-
-- The bundled datasets cover 2016–2019 and are intended as reproducible fixtures, not current ecosystem analysis.
-- Test coverage is still incomplete.
-- The terminal interface requires an interactive TTY.
-
----
-
 <details>
 <summary><strong>🇧🇷 Ver documentação em Português (Brasil)</strong></summary>
 
@@ -78,3 +41,40 @@ src/
 - A interface exige um terminal interativo.
 
 </details>
+
+---
+
+A stream-based terminal application that analyzes large State of JavaScript survey datasets without loading every record into memory.
+
+## What it demonstrates
+
+- Concatenating multiple NDJSON data sources as streams.
+- Parsing and transforming records incrementally.
+- Aggregating technology preferences by survey year.
+- Reporting byte-level progress through events.
+- Rendering progress and results in a terminal UI with Blessed.
+- Cancelling the pipeline through an `AbortController`.
+
+## Run
+
+```sh
+npm ci
+npm start
+```
+
+The sample datasets are stored under `docs/state-of-js`, and the aggregated result is written to `docs/final.json`.
+
+## Architecture
+
+```text
+src/
+├── helpers/   # configuration, lifecycle, and termination
+├── infra/     # logging
+└── service/   # stream pipeline and terminal views
+```
+
+## Current limitations
+
+- The bundled datasets cover 2016–2019 and are intended as reproducible fixtures, not current ecosystem analysis.
+- Test coverage is still incomplete.
+- The terminal interface requires an interactive TTY.
