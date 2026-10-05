@@ -1,5 +1,3 @@
-# stackoverflow-insights
-
 <details>
 <summary><strong>🇧🇷 Ver documentação em Português (Brasil)</strong></summary>
 
@@ -41,6 +39,8 @@ src/
 - A interface exige um terminal interativo.
 
 </details>
+
+# stackoverflow-insights
 
 ---
 
