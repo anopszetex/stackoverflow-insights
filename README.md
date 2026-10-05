@@ -42,8 +42,6 @@ src/
 
 # stackoverflow-insights
 
----
-
 A stream-based terminal application that analyzes large State of JavaScript survey datasets without loading every record into memory.
 
 ## What it demonstrates
